@@ -77,6 +77,8 @@ export const registercontroller = async (req, res) => {
       }
       //check user
       const user = await userModel.findOne({ email });
+      console.log("---------")
+      console.log(user)
       if (!user) {
         return res.status(404).send({
           success: false,
@@ -170,6 +172,7 @@ export const updateProfileController = async (req, res) => {
   try {
     const { name, email, password, address, phone } = req.body;
     const user = await userModel.findById(req.user._id);
+    // console.log(user)
     //password
     if (password && password.length < 6) {
       return res.json({ error: "Passsword is required and 6 character long" });

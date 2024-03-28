@@ -1,10 +1,18 @@
 import productModel from "../models/productModel.js";
 import categoryModel from "../models/categoryModel.js";
-import orderModel from "../models/orderModel.js";
+
 import slugify from "slugify";
+
+// import { v4 as uuidv4 } from "uuid";
+// import Stripe from "stripe";
+
+// const stripe = Stripe("sk_test_51HT3awLRpPHpN9zViTDEbkof6MkC4qStmbuzVSwEUm05GbEZnd2a4WkgoI0lyBdF3JsF8zmgPQHue92gLGsMQmBe00cxfp61Uq");
+
+
 
 import braintree from "braintree";
 import fs from "fs";
+import orderModel from "../models/orderModel.js";
 
 
 //payment gateway
@@ -366,6 +374,7 @@ export const productCategoryController = async (req, res) => {
 
 //payment gateway api
 //token
+//token
 export const braintreeTokenController = async (req, res) => {
   try {
     gateway.clientToken.generate({}, function (err, response) {
@@ -379,6 +388,56 @@ export const braintreeTokenController = async (req, res) => {
     console.log(error);
   }
 };
+
+
+//payment
+// export const brainTreePaymentController=async(req,res)=>{
+//   const { token, subTotal, user, cart } = req.body;
+// console.log(token,subTotal,user,cart)
+//   try {
+//     const customer = await stripe.customers.create({
+//       email: token.email,
+//       source: token.id,
+//     });
+//     const payment = await stripe.charges.create(
+//       {
+//         amount: subTotal * 100,
+//         currency: "inr",
+//         customer: customer.id,
+//         receipt_email: token.email,
+//       },
+//       {
+//         idempotencyKey: uuidv4(),
+//       }
+//     );
+//     res.send("payment success")
+//     // if (payment) {
+//     //   const newOrder = new orderModel({
+//     //     name: user.name,
+//     //     email: user.email,
+//     //     userid: user._id,
+//     //     orderItems: cart,
+//     //     orderAmount: subTotal,
+//     //     shippingAddress: {
+//     //       street: token.card.address_line1,
+//     //       city: token.card.address_city,
+//     //       country: token.card.address_country,
+//     //       picode: token.card.address_zip,
+//     //     },
+//     //     transectionId: payment.source.id,
+//     //   });
+//     //   newOrder.save();
+//     //   res.send("Payment Success");
+//     // } else {
+//     //   res.send("Payment Faild");
+//     // }
+//   } catch (error) {
+//     res.status(400).json({
+//       message: "Something went wrong",
+//       error: error.stack,
+//     });
+//   }
+// }
 
 
 //payment
@@ -397,9 +456,9 @@ export const brainTreePaymentController = async (req, res) => {
           submitForSettlement: true,
         },
       },
-      function (error, result) {
+      async function (error, result) {
         if (result) {
-          const order = new orderModel({
+          const order = await new orderModel({
             products: cart,
             payment: result,
             buyer: req.user._id,
@@ -414,6 +473,10 @@ export const brainTreePaymentController = async (req, res) => {
     console.log(error);
   }
 };
+
+
+
+
 
 
 
